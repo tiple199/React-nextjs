@@ -19,7 +19,8 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import { Container } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
-import Link from 'next/link'
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -62,6 +63,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function AppHeader() {
+  const router = useRouter();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
@@ -157,6 +159,9 @@ export default function AppHeader() {
       </MenuItem>
     </Menu>
   );
+  const handleRedirectHome = () => {
+    router.push("/");
+  }
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -173,6 +178,7 @@ export default function AppHeader() {
             noWrap
             component="div"
             sx={{ display: { xs: 'none', sm: 'block' } }}
+            onClick={()=>handleRedirectHome()}
           >
             Hỏi Dân IT
           </Typography>

@@ -1,6 +1,8 @@
 'use client'
+import { TrackContext } from "@/lib/track.wrapper";
 import { useHasMounted } from "@/utils/customHook";
 import { AppBar, Container } from "@mui/material";
+import { useContext } from "react";
 import AudioPlayer from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
 const AppFooter = () => {
@@ -8,12 +10,15 @@ const AppFooter = () => {
 
     if(!hasMounted) return (<></>)
 
+    const theme = useContext(TrackContext);
+
     return(
-        <div>
+        <div style={{marginTop: 50}}>
             <AppBar 
             position="fixed"  sx={{ top: 'auto', bottom: 0,background: "#f2f2f2" }}>
-                <Container sx={{display: "flex", columnGap: "50px"}}>
+                <Container sx={{display: "flex", columnGap: "50px",".rhap_main": {gap: "30px"}}}>
                     <AudioPlayer
+                        layout="horizontal-reverse"
                         src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/tracks/hoidanit.mp3`}
                         volume={0.5}
                         style={{

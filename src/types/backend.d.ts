@@ -51,4 +51,10 @@ declare global {
         result: T[]
     }
 
+    // interface IAuthUser{
+    //     access_token: string;
+    //     refresh_token: string;
+    //     user: IUser;
+    // }
+
 }

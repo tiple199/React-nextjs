@@ -11,7 +11,6 @@ import InputBase from '@mui/material/InputBase';
 import Badge from '@mui/material/Badge';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
@@ -21,6 +20,7 @@ import { Container } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useSession,signIn ,signOut } from "next-auth/react"
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -63,6 +63,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function AppHeader() {
+  const { data: session } = useSession();
+  console.log("Check session", session);
+  
   const router = useRouter();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
@@ -100,11 +103,14 @@ export default function AppHeader() {
       onClose={handleMenuClose}
     >
       <MenuItem>
-      <Link style={{color: "unset",textDecoration:"unset"}} href={"/profile"}>
+      <Link style={{color: "unset",textDecoration:"unset"}} href={`/profile/${session?.user._id}`}>
       Profile
       </Link>
       </MenuItem>
-      <MenuItem onClick={handleMenuClose}>Log out</MenuItem>
+      <MenuItem onClick={()=>{
+        handleMenuClose();
+        signOut();
+      }}>Log out</MenuItem>
     </Menu>
   );
 
@@ -177,8 +183,9 @@ export default function AppHeader() {
             variant="h6"
             noWrap
             component="div"
-            sx={{ display: { xs: 'none', sm: 'block' } }}
+            sx={{ display: { xs: 'none', sm: 'block' },cursor: "pointer" }}
             onClick={()=>handleRedirectHome()}
+            
           >
             Hỏi Dân IT
           </Typography>
@@ -201,10 +208,20 @@ export default function AppHeader() {
               textDecoration: "unset"
             }
             }}>
-            <Link href={"/playlist"}>Playlists</Link>
-            <Link href={"/like"}>Likes</Link>
-            <span>Upload</span>
-            <Avatar onClick={handleProfileMenuOpen}>LT</Avatar>
+              {
+                session ? 
+                <>
+                  <Link href={"/playlist"}>Playlists</Link>
+                  <Link href={"/like"}>Likes</Link>
+                  <Link href={"/track/upload"}>Upload</Link>
+                  <Avatar onClick={handleProfileMenuOpen}>LT</Avatar>
+                </>
+                :
+                <>
+                  <Link href={"auth/signin"}>Login</Link>
+                </>
+              }
+            
             
           </Box>
           <Box sx={{ display: { xs: 'flex', md: 'none' } }}>

@@ -1,5 +1,5 @@
 'use client'
-import { TrackContext } from "@/lib/track.wrapper";
+import { useTrackContext } from "@/lib/track.wrapper";
 import { useHasMounted } from "@/utils/customHook";
 import { AppBar, Container } from "@mui/material";
 import { useContext } from "react";
@@ -10,7 +10,7 @@ const AppFooter = () => {
 
     if(!hasMounted) return (<></>)
 
-    const theme = useContext(TrackContext);
+    const {currentTrack,setCurrentTrack} = useTrackContext() as ITrackContext;
 
     return(
         <div style={{marginTop: 50}}>

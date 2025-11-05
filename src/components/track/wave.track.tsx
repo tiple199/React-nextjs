@@ -6,6 +6,7 @@ import { WaveSurferOptions } from "wavesurfer.js";
 import "./wave.scss";
 import { Pause, PauseCircleOutline, PlayArrowOutlined, PlayArrowRounded, PlayCircleOutline } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
+import { sendRequest } from "@/utils/api";
 
 
 
@@ -13,6 +14,8 @@ const WaveTrack = ()=> {
     const [isPlaying,setIsPlaying] = useState<boolean>(false);
     const searchParams = useSearchParams();
     const fileName = searchParams.get('audio');
+    const id = searchParams.get('id');
+    const [trackInfo,setTrackInfo] = useState<ITrackTop | null>(null);
     const containerRef = useRef<HTMLDivElement>(null);
     const hoverRef = useRef<HTMLDivElement>(null);
     const [time,setTime] = useState<string>("0:00");
@@ -83,6 +86,19 @@ const WaveTrack = ()=> {
         }
     },[wavesurfer]);
 
+    useEffect(()=>{
+        const fetchData = async ()=>{
+            const res= await sendRequest<IBackendRes<ITrackTop>>({
+            url: `http://localhost:8000/api/v1/tracks/${id}`,
+            method: "GET",
+          });
+          if(res && res.data) {
+            setTrackInfo(res.data);
+          }
+        }
+        fetchData();
+    },[id])
+
     const onPlayPause = useCallback(() => {
     wavesurfer && wavesurfer.playPause();
   }, [wavesurfer]);
@@ -137,8 +153,8 @@ const WaveTrack = ()=> {
                         {isPlaying === true ? <Pause sx={{fontSize: 35  ,color:"white"}}/> : <PlayArrowRounded sx={{fontSize: 40,color:"white"}}/>}
                     </div>
                     <div>
-                        <span className="info-track_title">Hỏi Dan It song</span>
-                        <span className="info-track_author">Tiep</span>
+                        <span className="info-track_title">{trackInfo?.title}</span>
+                        <span className="info-track_author">{trackInfo?.description}</span>
                     </div>
                 </div>
                 <div className="img-wrap">
@@ -148,7 +164,7 @@ const WaveTrack = ()=> {
 
                     {
                         arrComments.map((v)=>(
-                            <Tooltip title={v.content} arrow>
+                            <Tooltip title={v.content} arrow key={v.id}>
 
                             <img
                             // onPointerMove={(e)=>{
